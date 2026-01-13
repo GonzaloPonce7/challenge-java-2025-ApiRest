@@ -2,7 +2,7 @@
 Challenge Java 2025 - API REST para gestión de puntos de venta, rutas y acreditaciones
 
 
-
+```mermaid
 erDiagram
 
     PUNTO_VENTA ||--o{ COSTO : "conecta"
@@ -26,10 +26,16 @@ erDiagram
         String puntoVentaNombre "Nombre del punto (desnormalizado)"
         LocalDateTime fechaRecepcion "Timestamp de creación"
     }
+```
+
 
 punto de venta puede tener muchas conexiones (costos) con otros puntos
 punto de venta puede recibir muchas acreditaciones
 
+PUNTO_VENTA ↔ COSTO (Muchos a Muchos)
+PUNTO_VENTA → ACREDITACION (Uno a Muchos)
+
+```mermaid
 classDiagram
 
     %% Entidades de Dominio
@@ -138,6 +144,7 @@ classDiagram
         +POST crear(AcreditacionRequest)
         +GET obtenerTodas()
     }
+```
 
     %% Relaciones
     PuntoVentaController --> PuntoVentaService
