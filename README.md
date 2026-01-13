@@ -146,7 +146,8 @@ classDiagram
     }
 ```
 
-    %% Relaciones
+
+%% Relaciones
     PuntoVentaController --> PuntoVentaService
     CostoController --> CostoService
     AcreditacionController --> AcreditacionService
