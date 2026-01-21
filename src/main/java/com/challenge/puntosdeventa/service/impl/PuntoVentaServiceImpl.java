@@ -1,8 +1,9 @@
-package com.challenge.puntosdeventa.service;
+package com.challenge.puntosdeventa.service.impl;
 
 import com.challenge.puntosdeventa.entity.PuntoVenta;
 import com.challenge.puntosdeventa.exception.PuntoVentaNotFoundException;
 import com.challenge.puntosdeventa.exception.PuntoVentaDuplicadoException;
+import com.challenge.puntosdeventa.service.IPuntoVentaService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -11,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Service
-public class PuntoVentaService {
+public class PuntoVentaServiceImpl implements IPuntoVentaService {
 
     // Caché en memoria thread-safe
     private final ConcurrentHashMap<Long, PuntoVenta> cache = new ConcurrentHashMap<>();
@@ -20,7 +21,7 @@ public class PuntoVentaService {
     private final AtomicLong idGenerator = new AtomicLong(10);
 
     // Constructor: inicializa datos
-    public PuntoVentaService() {
+    public PuntoVentaServiceImpl() {
         inicializarCache();
     }
 
@@ -28,16 +29,16 @@ public class PuntoVentaService {
      * Inicializa el caché con los 10 puntos de venta requeridos por la consigna
      */
     private void inicializarCache() {
-        cache.put(1L, new PuntoVenta(1L, "CABA"));
-        cache.put(2L, new PuntoVenta(2L, "GBA_1"));
-        cache.put(3L, new PuntoVenta(3L, "GBA_2"));
-        cache.put(4L, new PuntoVenta(4L, "Santa Fe"));
-        cache.put(5L, new PuntoVenta(5L, "Córdoba"));
-        cache.put(6L, new PuntoVenta(6L, "Misiones"));
-        cache.put(7L, new PuntoVenta(7L, "Salta"));
-        cache.put(8L, new PuntoVenta(8L, "Chubut"));
-        cache.put(9L, new PuntoVenta(9L, "Santa Cruz"));
-        cache.put(10L, new PuntoVenta(10L, "Catamarca"));
+        cache.put(1L, new PuntoVenta("1", "CABA"));
+        cache.put(2L, new PuntoVenta("2", "GBA_1"));
+        cache.put(3L, new PuntoVenta("3", "GBA_2"));
+        cache.put(4L, new PuntoVenta("4", "Santa Fe"));
+        cache.put(5L, new PuntoVenta("5", "Córdoba"));
+        cache.put(6L, new PuntoVenta("6", "Misiones"));
+        cache.put(7L, new PuntoVenta("7", "Salta"));
+        cache.put(8L, new PuntoVenta("8", "Chubut"));
+        cache.put(9L, new PuntoVenta("9", "Santa Cruz"));
+        cache.put(10L, new PuntoVenta("10", "Catamarca"));
     }
 
     /**
@@ -79,7 +80,7 @@ public class PuntoVentaService {
         }
 
         Long nuevoId = idGenerator.incrementAndGet();
-        PuntoVenta nuevoPuntoVenta = new PuntoVenta(nuevoId, nombre.trim());
+        PuntoVenta nuevoPuntoVenta = new PuntoVenta(String.valueOf(nuevoId), nombre.trim());
         cache.put(nuevoId, nuevoPuntoVenta);
         return nuevoPuntoVenta;
     }
@@ -91,7 +92,7 @@ public class PuntoVentaService {
         if (!cache.containsKey(id)) {
             throw new PuntoVentaNotFoundException(id);
         }
-        PuntoVenta puntoVentaActualizado = new PuntoVenta(id, nuevoNombre);
+        PuntoVenta puntoVentaActualizado = new PuntoVenta(String.valueOf(id), nuevoNombre);
         cache.put(id, puntoVentaActualizado);
         return puntoVentaActualizado;
     }

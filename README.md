@@ -98,7 +98,7 @@ classDiagram
 
     class CostoService {
         -ConcurrentHashMap~Long, Map~Long, Double~~ grafo
-        -PuntoVentaService puntoVentaService
+        -PuntoVentaService puntoVentaServiceImpl
         +inicializarGrafo() void
         +agregarCosto(Long a, Long b, Double costo) void
         +removerCosto(Long a, Long b) void
@@ -110,7 +110,7 @@ classDiagram
 
     class AcreditacionService {
         -AcreditacionRepository repository
-        -PuntoVentaService puntoVentaService
+        -PuntoVentaService puntoVentaServiceImpl
         +procesar(AcreditacionRequest request) Acreditacion
         +obtenerTodas() List~Acreditacion~
     }
