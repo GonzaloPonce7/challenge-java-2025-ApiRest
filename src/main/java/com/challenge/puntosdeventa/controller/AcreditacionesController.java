@@ -1,7 +1,7 @@
 package com.challenge.puntosdeventa.controller;
 
 import com.challenge.puntosdeventa.DTO.request.AcreditacionRequest;
-import com.challenge.puntosdeventa.entity.Acreditacion;
+import com.challenge.puntosdeventa.entity.AcreditacionEntity;
 import com.challenge.puntosdeventa.service.impl.AcreditacionesServiceImpl;
 
 import jakarta.validation.Valid;
@@ -24,8 +24,8 @@ public class AcreditacionesController {
      * POST /api/acreditaciones
      */
     @PostMapping
-    public ResponseEntity<Acreditacion> crear(@Valid @RequestBody AcreditacionRequest request) {
-        Acreditacion acreditacion = service.procesar(request);
+    public ResponseEntity<AcreditacionEntity> crear(@Valid @RequestBody AcreditacionRequest request) {
+        AcreditacionEntity acreditacion = service.procesar(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(acreditacion);
     }
 
@@ -34,8 +34,8 @@ public class AcreditacionesController {
      * GET /api/acreditaciones
      */
     @GetMapping
-    public ResponseEntity<List<Acreditacion>> obtenerTodas() {
-        List<Acreditacion> acreditaciones = service.obtenerTodas();
+    public ResponseEntity<List<AcreditacionEntity>> obtenerTodas() {
+        List<AcreditacionEntity> acreditaciones = service.obtenerTodas();
         return ResponseEntity.ok(acreditaciones);
     }
 }

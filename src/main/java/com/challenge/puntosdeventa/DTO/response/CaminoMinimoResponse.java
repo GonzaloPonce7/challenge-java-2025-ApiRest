@@ -3,7 +3,11 @@ package com.challenge.puntosdeventa.DTO.response;
 import java.util.List;
 
 public record CaminoMinimoResponse(
-
-        Double costoTotal,
-        List<String> camino
+        Long origenId,
+        String origenNombre,
+        Long destinoId,
+        String destinoNombre,
+        Double costoMinimo,
+        List<PuntoVentaResponse> camino,
+        String caminoDescripcion
 ) {}

@@ -1,109 +1,89 @@
 package com.challenge.puntosdeventa.service.impl;
 
+import com.challenge.puntosdeventa.DTO.request.PuntoVentaRequest;
+import com.challenge.puntosdeventa.DTO.response.PuntoVentaResponse;
 import com.challenge.puntosdeventa.entity.PuntoVenta;
+import com.challenge.puntosdeventa.entity.PuntoVentaEntity;
 import com.challenge.puntosdeventa.exception.PuntoVentaNotFoundException;
-import com.challenge.puntosdeventa.exception.PuntoVentaDuplicadoException;
+import com.challenge.puntosdeventa.mapper.PuntoVentaMapper;
+import com.challenge.puntosdeventa.repository.IPuntoVentaRepository;
 import com.challenge.puntosdeventa.service.IPuntoVentaService;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class PuntoVentaServiceImpl implements IPuntoVentaService {
 
-    // Caché en memoria thread-safe
-    private final ConcurrentHashMap<Long, PuntoVenta> cache = new ConcurrentHashMap<>();
+    private static final String CACHE_ALL = "puntosVenta::all";
+    private static final String CACHE_BY_ID = "puntoVenta::byId";
 
-    // Generador de IDs thread-safe
-    private final AtomicLong idGenerator = new AtomicLong(10);
+    private final IPuntoVentaRepository repository;
 
-    // Constructor: inicializa datos
-    public PuntoVentaServiceImpl() {
-        inicializarCache();
+    public PuntoVentaServiceImpl(IPuntoVentaRepository repository) {
+        this.repository = repository;
     }
 
-    /**
-     * Inicializa el caché con los 10 puntos de venta requeridos por la consigna
-     */
-    private void inicializarCache() {
-        cache.put(1L, new PuntoVenta("1", "CABA"));
-        cache.put(2L, new PuntoVenta("2", "GBA_1"));
-        cache.put(3L, new PuntoVenta("3", "GBA_2"));
-        cache.put(4L, new PuntoVenta("4", "Santa Fe"));
-        cache.put(5L, new PuntoVenta("5", "Córdoba"));
-        cache.put(6L, new PuntoVenta("6", "Misiones"));
-        cache.put(7L, new PuntoVenta("7", "Salta"));
-        cache.put(8L, new PuntoVenta("8", "Chubut"));
-        cache.put(9L, new PuntoVenta("9", "Santa Cruz"));
-        cache.put(10L, new PuntoVenta("10", "Catamarca"));
+    @Override
+    @Cacheable(value = CACHE_ALL)
+    public List<PuntoVentaResponse> getAll() {
+        return repository.findAll()
+                .stream()
+                .map(PuntoVentaMapper::toResponse)
+                .toList();
     }
 
-    /**
-     * Obtiene todos los puntos de venta
-     */
-    public List<PuntoVenta> obtenerTodos() {
-        return new ArrayList<>(cache.values());
+    @Override
+    @Cacheable(value = CACHE_BY_ID, key = "#id")
+    public PuntoVentaResponse getById(Long id) {
+        PuntoVentaEntity entity = repository.findById(id)
+                .orElseThrow(() -> new PuntoVentaNotFoundException(id));
+        return PuntoVentaMapper.toResponse(entity);
     }
 
-    /**
-     * Obtiene un punto de venta por ID
-     */
-    public PuntoVenta obtenerPorId(Long id) {
-        PuntoVenta puntoVenta = cache.get(id);
-        if (puntoVenta == null) {
+    @CacheEvict(value = CACHE_BY_ID, allEntries = true)
+    public PuntoVentaResponse create(PuntoVentaRequest request) {
+
+        if(repository.existsByNombre(request.nombre())) {
+            throw new RuntimeException("Punto de venta existente");
+        }
+
+        return PuntoVentaMapper.toResponse(repository.save(PuntoVentaMapper.toEntity(request)));
+    }
+
+    @Override
+    @CacheEvict(value = {CACHE_ALL, CACHE_BY_ID}, allEntries = true)
+    public PuntoVentaResponse actualizar(Long id, PuntoVentaRequest request) {
+
+        PuntoVentaEntity entity = repository.findById(id)
+                .orElseThrow(() -> new PuntoVentaNotFoundException(id));
+
+        PuntoVentaEntity updated = PuntoVentaMapper.updateEntity(entity, request);
+        PuntoVentaEntity saved = repository.save(updated);
+
+        return PuntoVentaMapper.toResponse(saved);
+    }
+
+    @Override
+    @CacheEvict(value = {CACHE_ALL, CACHE_BY_ID}, allEntries = true)
+    public void delete(Long id) {
+
+        if (!repository.existsById(id)) {
             throw new PuntoVentaNotFoundException(id);
         }
-        return puntoVenta;
+
+        repository.deleteById(id);
     }
 
-    /**
-     * Verifica si existe un punto de venta
-     */
-    public boolean existe(Long id) {
-        return cache.containsKey(id);
+    @Override
+    public boolean existsPuntoById(Long id) {
+        return repository.existsById(id);
     }
 
-    /**
-     * Crea un nuevo punto de venta
-     * Valida que no exista otro punto de venta con el mismo nombre
-     */
-    public PuntoVenta crear(String nombre) {
-        // Validar duplicado por nombre
-        boolean nombreExiste = cache.values().stream()
-                .anyMatch(pv -> pv.nombre().equalsIgnoreCase(nombre.trim()));
-
-        if (nombreExiste) {
-            throw new PuntoVentaDuplicadoException(nombre);
-        }
-
-        Long nuevoId = idGenerator.incrementAndGet();
-        PuntoVenta nuevoPuntoVenta = new PuntoVenta(String.valueOf(nuevoId), nombre.trim());
-        cache.put(nuevoId, nuevoPuntoVenta);
-        return nuevoPuntoVenta;
-    }
-
-    /**
-     * Actualiza un punto de venta existente
-     */
-    public PuntoVenta actualizar(Long id, String nuevoNombre) {
-        if (!cache.containsKey(id)) {
-            throw new PuntoVentaNotFoundException(id);
-        }
-        PuntoVenta puntoVentaActualizado = new PuntoVenta(String.valueOf(id), nuevoNombre);
-        cache.put(id, puntoVentaActualizado);
-        return puntoVentaActualizado;
-    }
-
-    /**
-     * Elimina un punto de venta
-     */
-    public void eliminar(Long id) {
-        if (!cache.containsKey(id)) {
-            throw new PuntoVentaNotFoundException(id);
-        }
-        cache.remove(id);
+    @Override
+    public boolean existsPuntoByName(String nombre) {
+        return repository.existsByNombre(nombre);
     }
 }

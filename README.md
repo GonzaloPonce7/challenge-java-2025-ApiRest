@@ -165,3 +165,56 @@ classDiagram
     CostoController ..> ConexionResponse
     AcreditacionController ..> AcreditacionRequest
     AcreditacionService --> Acreditacion
+
+src/main/java/com/challenge/
+├── JavaChallengeApplication.java
+├── config/
+│   ├── RedisConfig.java
+│   ├── MongoConfig.java
+│   └── DataInitializer.java
+├── controller/
+│   ├── AcreditacionController.java
+│   ├── CostoController.java
+│   └── PuntoVentaController.java
+├── service/
+│   ├── AcreditacionService.java
+│   ├── CostoService.java
+│   ├── PuntoVentaService.java
+│   └── impl/
+│       ├── AcreditacionServiceImpl.java
+│       ├── CostoServiceImpl.java
+│       └── PuntoVentaServiceImpl.java
+├── repository/
+│   ├── AcreditacionRepository.java
+│   ├── CostoRepository.java
+│   ├── PuntoVentaRepository.java
+│   └── impl/
+│       ├── AcreditacionRepositoryImpl.java
+│       ├── CostoRepositoryImpl.java
+│       └── PuntoVentaRepositoryImpl.java
+├── entity/
+│   ├── AcreditacionEntity.java
+│   ├── CostoPuntoVentaEntity.java
+│   └── PuntoVentaEntity.java
+├── dto/
+│   ├── request/
+│   │   ├── AcreditacionRequest.java
+│   │   ├── CostoRequest.java
+│   │   └── PuntoVentaRequest.java
+│   ├── response/
+│   │   ├── AcreditacionResponse.java
+│   │   ├── CaminoMinimoResponse.java
+│   │   ├── CostoResponse.java
+│   │   └── PuntoVentaResponse.java
+│   └── mapper/
+│       ├── AcreditacionMapper.java
+│       ├── CostoMapper.java
+│       └── PuntoVentaMapper.java
+└── exception/
+├── BusinessException.java
+├── EntityNotFoundException.java
+├── ValidationException.java
+├── handler/
+│   └── GlobalExceptionHandler.java
+└── message/
+└── ErrorMessage.java

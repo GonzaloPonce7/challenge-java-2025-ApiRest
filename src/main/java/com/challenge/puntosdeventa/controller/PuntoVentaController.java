@@ -1,6 +1,7 @@
 package com.challenge.puntosdeventa.controller;
 
 import com.challenge.puntosdeventa.DTO.request.PuntoVentaRequest;
+import com.challenge.puntosdeventa.DTO.response.PuntoVentaResponse;
 import com.challenge.puntosdeventa.entity.PuntoVenta;
 import com.challenge.puntosdeventa.service.impl.PuntoVentaServiceImpl;
 import jakarta.validation.Valid;
@@ -22,8 +23,8 @@ public class PuntoVentaController {
      * GET /api/puntos-venta
      */
     @GetMapping
-    public ResponseEntity<List<PuntoVenta>> obtenerTodos() {
-        return ResponseEntity.ok(service.obtenerTodos());
+    public ResponseEntity<List<PuntoVentaResponse>> getAll() {
+        return ResponseEntity.ok(service.getAll());
     }
 
     /**
@@ -31,8 +32,8 @@ public class PuntoVentaController {
      * GET /api/puntos-venta/{id}
      */
     @GetMapping("/{id}")
-    public ResponseEntity<PuntoVenta> obtenerPorId(Long id) {
-        return ResponseEntity.ok(service.obtenerPorId(id));
+    public ResponseEntity<PuntoVentaResponse> getById(Long id) {
+        return ResponseEntity.ok(service.getById(id));
     }
 
     /**
@@ -40,8 +41,8 @@ public class PuntoVentaController {
      * POST /api/puntos-venta
      */
     @PostMapping("/")
-    public ResponseEntity<PuntoVenta> crear(@Valid @RequestBody PuntoVentaRequest puntoVenta) {
-        return ResponseEntity.ok(service.crear(String.valueOf(puntoVenta)));
+    public ResponseEntity<PuntoVentaResponse> crear(@Valid @RequestBody PuntoVentaRequest puntoVenta) {
+        return ResponseEntity.ok(service.create(String.valueOf(puntoVenta)));
     }
 
     /**
@@ -49,10 +50,8 @@ public class PuntoVentaController {
      * PUT /api/puntos-venta/{id}
      */
     @PutMapping
-    public ResponseEntity<PuntoVenta> actualizar(
-            @PathVariable Long id,
-            @Valid @RequestBody PuntoVentaRequest request) {
-        PuntoVenta puntoVentaActualizado = service.actualizar(id, request.nombre());
+    public ResponseEntity<PuntoVentaResponse> actualizar(@PathVariable Long id, @Valid @RequestBody PuntoVentaRequest request) {
+        PuntoVentaResponse puntoVentaActualizado = service.update(id, request.nombre());
         return ResponseEntity.ok(puntoVentaActualizado);
     }
 
@@ -62,7 +61,7 @@ public class PuntoVentaController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminar(@PathVariable Long id) {
-        service.eliminar(id);
+        service.delete(id);
         return ResponseEntity.noContent().build();
     }
 }

@@ -1,13 +1,14 @@
 package com.challenge.puntosdeventa.service;
 
-import com.challenge.puntosdeventa.entity.PuntoVenta;
+import com.challenge.puntosdeventa.DTO.response.PuntoVentaResponse;
 import java.util.List;
 
 public interface IPuntoVentaService {
-    List<PuntoVenta> obtenerTodos();
-    PuntoVenta obtenerPorId(Long id);
-    boolean existe(Long id);
-    PuntoVenta crear(String nombre);
-    PuntoVenta actualizar(Long id, String nuevoNombre);
-    void eliminar(Long id);
+    List<PuntoVentaResponse> getAll();
+    PuntoVentaResponse getById(Long id);
+    PuntoVentaResponse create(String nombre);
+    PuntoVentaResponse update(Long id, String nuevoNombre);
+    void delete(Long id);
+    boolean existsPuntoById(Long id);
+    boolean existsPuntoByName(String nombre);
 }
