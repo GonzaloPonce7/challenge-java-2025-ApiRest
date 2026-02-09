@@ -2,11 +2,10 @@ package com.challenge.puntosdeventa.service.impl;
 
 import com.challenge.puntosdeventa.DTO.request.PuntoVentaRequest;
 import com.challenge.puntosdeventa.DTO.response.PuntoVentaResponse;
-import com.challenge.puntosdeventa.entity.PuntoVenta;
 import com.challenge.puntosdeventa.entity.PuntoVentaEntity;
 import com.challenge.puntosdeventa.exception.PuntoVentaNotFoundException;
 import com.challenge.puntosdeventa.mapper.PuntoVentaMapper;
-import com.challenge.puntosdeventa.repository.IPuntoVentaRepository;
+import com.challenge.puntosdeventa.repository.PuntoVentaRepository;
 import com.challenge.puntosdeventa.service.IPuntoVentaService;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -20,9 +19,9 @@ public class PuntoVentaServiceImpl implements IPuntoVentaService {
     private static final String CACHE_ALL = "puntosVenta::all";
     private static final String CACHE_BY_ID = "puntoVenta::byId";
 
-    private final IPuntoVentaRepository repository;
+    private final PuntoVentaRepository repository;
 
-    public PuntoVentaServiceImpl(IPuntoVentaRepository repository) {
+    public PuntoVentaServiceImpl(PuntoVentaRepository repository) {
         this.repository = repository;
     }
 
@@ -55,7 +54,7 @@ public class PuntoVentaServiceImpl implements IPuntoVentaService {
 
     @Override
     @CacheEvict(value = {CACHE_ALL, CACHE_BY_ID}, allEntries = true)
-    public PuntoVentaResponse actualizar(Long id, PuntoVentaRequest request) {
+    public PuntoVentaResponse update(Long id, PuntoVentaRequest request) {
 
         PuntoVentaEntity entity = repository.findById(id)
                 .orElseThrow(() -> new PuntoVentaNotFoundException(id));
@@ -75,15 +74,5 @@ public class PuntoVentaServiceImpl implements IPuntoVentaService {
         }
 
         repository.deleteById(id);
-    }
-
-    @Override
-    public boolean existsPuntoById(Long id) {
-        return repository.existsById(id);
-    }
-
-    @Override
-    public boolean existsPuntoByName(String nombre) {
-        return repository.existsByNombre(nombre);
     }
 }

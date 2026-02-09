@@ -4,6 +4,9 @@ import jakarta.validation.constraints.NotNull;
 
 public record PuntoVentaRequest(
 
+        @NotNull(message = "El Id no puede ser nulo")
+        Long id,
+
         @NotNull(message = "El nombre del punto de venta no puede ser nulo")
         String nombre
 ) {}

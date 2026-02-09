@@ -5,6 +5,6 @@ import com.challenge.puntosdeventa.DTO.response.AcreditacionResponse;
 import java.util.List;
 
 public interface IAcreditacionService {
-    AcreditacionResponse procesar(AcreditacionRequest request);
-    List<AcreditacionResponse> obtenerTodas();
+    AcreditacionResponse save(AcreditacionRequest request);
+    List<AcreditacionResponse> getAll();
 }

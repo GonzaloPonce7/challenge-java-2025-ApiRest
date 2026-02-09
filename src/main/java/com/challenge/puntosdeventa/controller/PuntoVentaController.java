@@ -51,7 +51,7 @@ public class PuntoVentaController {
      */
     @PutMapping
     public ResponseEntity<PuntoVentaResponse> actualizar(@PathVariable Long id, @Valid @RequestBody PuntoVentaRequest request) {
-        PuntoVentaResponse puntoVentaActualizado = service.update(id, request.nombre());
+        PuntoVentaResponse puntoVentaActualizado = service.update(id, , request.nombre());
         return ResponseEntity.ok(puntoVentaActualizado);
     }
 

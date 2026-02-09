@@ -8,6 +8,5 @@ public record CaminoMinimoResponse(
         Long destinoId,
         String destinoNombre,
         Double costoMinimo,
-        List<PuntoVentaResponse> camino,
-        String caminoDescripcion
+        List<PuntoVentaResponse> camino
 ) {}

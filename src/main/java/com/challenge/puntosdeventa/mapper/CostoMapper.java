@@ -27,4 +27,22 @@ public class CostoMapper {
                 entity.costo()
         );
     }
+
+    public static CostoResponse toResponseNormalizado(CostoPuntoVentaEntity entity, Long puntoReferencia) {
+        if (entity.idA().equals(puntoReferencia)) {
+            return new CostoResponse(
+                    entity.id(),
+                    entity.idA(),
+                    entity.idB(),
+                    entity.costo()
+            );
+        } else {
+            return new CostoResponse(
+                    entity.id(),
+                    entity.idB(),
+                    entity.idA(),
+                    entity.costo()
+            );
+        }
+    }
 }
