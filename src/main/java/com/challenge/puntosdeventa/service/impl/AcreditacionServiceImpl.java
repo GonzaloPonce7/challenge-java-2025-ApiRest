@@ -2,7 +2,6 @@ package com.challenge.puntosdeventa.service.impl;
 
 import com.challenge.puntosdeventa.DTO.request.AcreditacionRequest;
 import com.challenge.puntosdeventa.DTO.response.AcreditacionResponse;
-import com.challenge.puntosdeventa.DTO.response.PuntoVentaResponse;
 import com.challenge.puntosdeventa.entity.AcreditacionEntity;
 import com.challenge.puntosdeventa.entity.PuntoVentaEntity;
 import com.challenge.puntosdeventa.exception.PuntoVentaNotFoundException;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

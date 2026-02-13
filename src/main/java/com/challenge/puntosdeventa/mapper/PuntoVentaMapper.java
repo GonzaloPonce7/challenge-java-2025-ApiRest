@@ -3,12 +3,10 @@ package com.challenge.puntosdeventa.mapper;
 import com.challenge.puntosdeventa.DTO.response.PuntoVentaResponse;
 import com.challenge.puntosdeventa.entity.PuntoVentaEntity;
 import com.challenge.puntosdeventa.DTO.request.PuntoVentaRequest;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
-@NoArgsConstructor
 public class PuntoVentaMapper {
+
+    private  PuntoVentaMapper() {}
 
     public static PuntoVentaEntity toEntity(PuntoVentaRequest request) {
         return new PuntoVentaEntity(
