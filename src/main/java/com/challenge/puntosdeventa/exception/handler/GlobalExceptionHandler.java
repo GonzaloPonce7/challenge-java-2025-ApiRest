@@ -1,6 +1,7 @@
 package com.challenge.puntosdeventa.exception.handler;
 
 import com.challenge.puntosdeventa.exception.CaminoNoEncontradoException;
+import com.challenge.puntosdeventa.exception.CostoDuplicadoException;
 import com.challenge.puntosdeventa.exception.PuntoVentaDuplicadoException;
 import com.challenge.puntosdeventa.exception.PuntoVentaNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -35,6 +36,16 @@ public class GlobalExceptionHandler {
                 LocalDateTime.now()
         );
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(CostoDuplicadoException.class)
+    public ResponseEntity<ErrorResponse> handleCostoDuplicado(CostoDuplicadoException ex) {
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.CONFLICT.value(),
+                ex.getMessage(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(PuntoVentaDuplicadoException.class)

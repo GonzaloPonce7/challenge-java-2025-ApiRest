@@ -4,6 +4,8 @@ import com.challenge.puntosdeventa.DTO.response.CaminoMinimoResponse;
 import com.challenge.puntosdeventa.DTO.response.CostoResponse;
 import com.challenge.puntosdeventa.DTO.response.PuntoVentaResponse;
 import com.challenge.puntosdeventa.entity.CostoPuntoVentaEntity;
+import com.challenge.puntosdeventa.exception.CostoDuplicadoException;
+import com.challenge.puntosdeventa.exception.PuntoVentaNotFoundException;
 import com.challenge.puntosdeventa.mapper.CostoMapper;
 import com.challenge.puntosdeventa.repository.CostoRepository;
 import com.challenge.puntosdeventa.repository.PuntoVentaRepository;
@@ -38,8 +40,11 @@ public class CostoServiceImpl implements ICostoService {
     @CacheEvict(value = {CACHE_DIRECTOS, CACHE_GRAFO}, allEntries = true)
     public void agregarCosto(Long puntoA, Long puntoB, Double costo) {
 
-        if (!puntoVentaRepo.existsById(puntoA) || !puntoVentaRepo.existsById(puntoB)) {
-            throw new RuntimeException("No se encontró el punto de venta");
+        if (!puntoVentaRepo.existsById(puntoA)) {
+            throw new PuntoVentaNotFoundException(puntoA);
+        }
+        if (!puntoVentaRepo.existsById(puntoB)) {
+            throw new PuntoVentaNotFoundException(puntoB);
         }
 
         if (puntoA.equals(puntoB) && costo != 0) {
@@ -47,7 +52,7 @@ public class CostoServiceImpl implements ICostoService {
         }
 
         if(costoRepository.existsByIdAAndIdB(puntoA, puntoB) || costoRepository.existsByIdAAndIdB(puntoB, puntoA)){
-            throw new IllegalArgumentException("El costo ya existe");
+            throw new CostoDuplicadoException(puntoA, puntoB);
         }
 
         costoRepository.save(new CostoPuntoVentaEntity(null, puntoA, puntoB, costo));
@@ -64,7 +69,7 @@ public class CostoServiceImpl implements ICostoService {
     @Cacheable(value = CACHE_DIRECTOS, key = "#puntoVentaId")
     public List<CostoResponse> obtenerCostosDirectos(Long puntoVentaId) {
         if (!puntoVentaRepo.existsById(puntoVentaId)) {
-            throw new RuntimeException("No se encontró el punto de venta");
+            throw new PuntoVentaNotFoundException(puntoVentaId);
         }
 
         List<CostoPuntoVentaEntity> costos = costoRepository.findByIdAOrIdB(puntoVentaId, puntoVentaId);
@@ -77,8 +82,11 @@ public class CostoServiceImpl implements ICostoService {
     @Override
     @Cacheable(value = CACHE_GRAFO, key = "#origen + '_' + #destino")
     public CaminoMinimoResponse calcularCaminoMinimo(Long origenId, Long destinoId) {
-        if (!puntoVentaRepo.existsById(origenId) || !puntoVentaRepo.existsById(destinoId)) {
-            throw new RuntimeException("No se encontró el punto de venta");
+        if (!puntoVentaRepo.existsById(origenId)) {
+            throw new PuntoVentaNotFoundException(origenId);
+        }
+        if(!puntoVentaRepo.existsById(destinoId)) {
+            throw new PuntoVentaNotFoundException(destinoId);
         }
 
         List<CostoPuntoVentaEntity> costos = costoRepository.findAll();
@@ -88,7 +96,7 @@ public class CostoServiceImpl implements ICostoService {
         List<PuntoVentaResponse> camino = resultado.camino().stream()
                 .map(id -> {
                     var punto = puntoVentaRepo.findById(id)
-                            .orElseThrow(() -> new RuntimeException("Punto no encontrado: " + id));
+                            .orElseThrow(() -> new PuntoVentaNotFoundException(id));
                     return new PuntoVentaResponse(punto.id(), punto.nombre());
                 })
                 .toList();

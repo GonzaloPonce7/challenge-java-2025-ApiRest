@@ -14,6 +14,4 @@ public interface AcreditacionRepository extends MongoRepository<AcreditacionEnti
     Optional<AcreditacionEntity> findById(String id);
     AcreditacionEntity save(AcreditacionEntity acreditacion);
     List<AcreditacionEntity> findByPuntoVentaId(Integer puntoVentaId);
-    List<AcreditacionEntity> findByFechaRecepcionBetween(LocalDateTime inicio, LocalDateTime fin);
-    long countByPuntoVentaId(Integer puntoVentaId);
 }

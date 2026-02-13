@@ -1,9 +1,8 @@
 package com.challenge.puntosdeventa.controller;
 
 import com.challenge.puntosdeventa.DTO.request.AcreditacionRequest;
-import com.challenge.puntosdeventa.entity.AcreditacionEntity;
-import com.challenge.puntosdeventa.service.impl.AcreditacionesServiceImpl;
-
+import com.challenge.puntosdeventa.DTO.response.AcreditacionResponse;
+import com.challenge.puntosdeventa.service.impl.AcreditacionServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,25 +16,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AcreditacionesController {
 
-    private final AcreditacionesServiceImpl service;
+    private final AcreditacionServiceImpl service;
 
-    /**
-     * Crea una nueva acreditación (enriquecida y persistida)
-     * POST /api/acreditaciones
-     */
     @PostMapping
-    public ResponseEntity<AcreditacionEntity> crear(@Valid @RequestBody AcreditacionRequest request) {
-        AcreditacionEntity acreditacion = service.procesar(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(acreditacion);
+    public ResponseEntity<AcreditacionResponse> crear(@Valid @RequestBody AcreditacionRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.save(request));
     }
 
-    /**
-     * Obtiene todas las acreditaciones
-     * GET /api/acreditaciones
-     */
     @GetMapping
-    public ResponseEntity<List<AcreditacionEntity>> obtenerTodas() {
-        List<AcreditacionEntity> acreditaciones = service.obtenerTodas();
-        return ResponseEntity.ok(acreditaciones);
+    public ResponseEntity<List<AcreditacionResponse>> obtenerTodas() {
+        return ResponseEntity.ok(service.getAll());
     }
 }
